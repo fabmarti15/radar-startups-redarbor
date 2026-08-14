@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radar M&amp;A · Redarbor</title>
+<style>
+  :root{
+    --bg:#0d0f14; --panel:#14171f; --panel2:#1a1e28; --line:#252a36;
+    --txt:#e8e6e1; --dim:#8b93a4; --dimmer:#5d6577;
+    --a:#c8f542; --b:#ffb347; --c:#6b7688;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+  /* HEADER */
+  header{border-bottom:1px solid var(--line);padding:52px 0 34px;position:relative;overflow:hidden}
+  header::after{content:"";position:absolute;top:-120px;right:-60px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(200,245,66,.09),transparent 70%);pointer-events:none}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--a);margin-bottom:16px}
+  h1{font-family:var(--serif);font-size:clamp(34px,5.6vw,58px);line-height:1.03;font-weight:400;letter-spacing:-.02em;max-width:18ch}
+  h1 em{font-style:italic;color:var(--a)}
+  .lede{color:var(--dim);max-width:62ch;margin-top:18px;font-size:15.5px}
+  .meta{display:flex;gap:26px;flex-wrap:wrap;margin-top:26px;font-family:var(--mono);font-size:11px;color:var(--dimmer);letter-spacing:.06em;text-transform:uppercase}
+  .meta b{color:var(--txt);font-weight:500}
+
+  /* CONTEXT STRIP */
+  .ctx{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+  .ctx div{background:var(--bg);padding:20px 20px}
+  .ctx span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dimmer);margin-bottom:7px}
+  .ctx p{font-size:13.5px;color:var(--dim)}
+  .ctx p b{color:var(--txt);font-weight:600}
+
+  /* CONTROLS */
+  .controls{position:sticky;top:0;z-index:20;background:rgba(13,15,20,.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:16px 0}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .row+.row{margin-top:10px}
+  .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer);margin-right:4px;min-width:64px}
+  .chip{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 11px;border:1px solid var(--line);border-radius:20px;background:transparent;color:var(--dim);cursor:pointer;transition:.15s}
+  .chip:hover{border-color:var(--dimmer);color:var(--txt)}
+  .chip[aria-pressed="true"]{background:var(--a);border-color:var(--a);color:#0d0f14;font-weight:600}
+  .spacer{flex:1}
+  select{font-family:var(--mono);font-size:11px;background:var(--panel);color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:6px 9px;cursor:pointer}
+  .count{font-family:var(--mono);font-size:11px;color:var(--dimmer);letter-spacing:.06em}
+  .count b{color:var(--a)}
+
+  /* GRID */
+  main{padding:30px 0 70px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;transition:.18s;position:relative}
+  .card:hover{border-color:#38404f;transform:translateY(-2px)}
+  .card.t-A{border-left:3px solid var(--a)}
+  .card.t-B{border-left:3px solid var(--b)}
+  .card.t-C{border-left:3px solid var(--c)}
+  .ch{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .nm{font-family:var(--serif);font-size:22px;line-height:1.15;letter-spacing:-.01em}
+  .nm a{color:inherit;text-decoration:none;border-bottom:1px solid transparent}
+  .nm a:hover{border-bottom-color:var(--a);color:var(--a)}
+  .geo{font-family:var(--mono);font-size:10px;color:var(--dimmer);letter-spacing:.1em;text-transform:uppercase;margin-top:5px}
+  .tier{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;padding:4px 8px;border-radius:4px;white-space:nowrap}
+  .t-A .tier{background:rgba(200,245,66,.14);color:var(--a)}
+  .t-B .tier{background:rgba(255,179,71,.13);color:var(--b)}
+  .t-C .tier{background:rgba(107,118,136,.16);color:#94a0b5}
+  .que{font-size:13.5px;color:var(--dim)}
+  .tags{display:flex;gap:5px;flex-wrap:wrap}
+  .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--dimmer);border:1px solid var(--line);padding:3px 7px;border-radius:4px}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-radius:8px;overflow:hidden;font-size:12.5px}
+  .facts div{background:var(--panel2);padding:9px 11px}
+  .facts div:nth-child(odd):last-child{grid-column:1/-1}
+  .facts span{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dimmer);margin-bottom:3px}
+  .why{border-top:1px solid var(--line);padding-top:12px;font-size:13px}
+  .why span{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--a);display:block;margin-bottom:5px}
+  .rk{font-size:12.5px;color:var(--dim);margin-top:11px;padding-left:13px;border-left:2px solid #3a3226}
+  .rk span{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--b);display:block;margin-bottom:4px}
+  .src{margin-top:auto;padding-top:4px}
+  .src a{font-family:var(--mono);font-size:10px;color:var(--dimmer);letter-spacing:.06em;text-decoration:none;border-bottom:1px dotted var(--dimmer)}
+  .src a:hover{color:var(--a);border-bottom-color:var(--a)}
+  .empty{text-align:center;padding:70px 20px;color:var(--dimmer);font-family:var(--mono);font-size:12px}
+
+  footer{border-top:1px solid var(--line);padding:30px 0 50px;font-size:12.5px;color:var(--dimmer)}
+  footer p{max-width:70ch}
+  footer b{color:var(--dim)}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:18px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  @media(max-width:600px){.lbl{min-width:100%;margin-bottom:2px}.facts{grid-template-columns:1fr}header{padding:36px 0 26px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">Radar de adquisición · Agosto 2026</div>
+    <h1>22 startups que le podrían <em>sumar mucho</em> a Redarbor</h1>
+    <p class="lede">Lectura de compra: qué activo cierra un hueco real del grupo, a qué precio aproximado, y qué pega tiene. Ordenado por lo que se puede mover ahora, no por lo que suena mejor.</p>
+    <div class="meta">
+      <span><b>22</b> compañías</span>
+      <span><b>10</b> categorías</span>
+      <span>Datos <b>2022–2026</b>, cada monto con fuente</span>
+      <span>n/d = <b>no publicado</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="ctx wrap" style="max-width:1180px">
+  <div><span>Quién es Redarbor</span><p>Grupo español (Sant Cugat, 2013). Portafolio: <b>Computrabajo</b> (21 países), <b>InfoJobs Brasil</b>, <b>Catho</b>, <b>OCC Mundial</b>, <b>Pandapé</b>, <b>Genoma</b>.</p></div>
+  <div><span>Capital y tamaño</span><p><b>Vitruvian Partners</b> entró con minoritaria en 2024 para financiar Catho + OCC (<b>USD 85M</b> a SEEK). Ingresos ~<b>EUR 120M</b> en 2024.</p></div>
+  <div><span>Los huecos reales</span><p>No monetiza al candidato. No cobra por colocar, solo por publicar. Matching débil. Sin antifraude de IA. Pandapé compite abajo.</p></div>
+  <div><span>Ojo con esto</span><p><b>Turijobs</b> es de StepStone desde 2017. <b>Bumeran</b> es de Jobint (Riverwood), competidor. Eso contamina a UBITS.</p></div>
+</div>
+
+<div class="controls">
+  <div class="wrap">
+    <div class="row" id="f-cat"><span class="lbl">Categoría</span></div>
+    <div class="row" id="f-geo"><span class="lbl">Geografía</span></div>
+    <div class="row">
+      <span class="lbl">Ticket</span><span id="f-tk" style="display:contents"></span>
+      <span class="spacer"></span>
+      <select id="sort">
+        <option value="tier">Prioridad de compra</option>
+        <option value="ticket">Ticket: barato primero</option>
+        <option value="az">Nombre A–Z</option>
+        <option value="geo">Geografía</option>
+      </select>
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+</div>
+
+<main class="wrap"><div class="grid" id="grid"></div></main>
+
+<footer class="wrap">
+  <div class="legend">
+    <span><i style="background:var(--a)"></i>A · Mover ahora</span>
+    <span><i style="background:var(--b)"></i>B · Vigilar / conversación exploratoria</span>
+    <span><i style="background:var(--c)"></i>C · Fuera de alcance, solo alianza</span>
+  </div>
+  <p><b>Método y límites.</b> Investigación de fuentes públicas (prensa especializada, notas de prensa de las rondas, trackers). Los montos son los últimos anunciados públicamente: las valuaciones privadas rara vez se publican, por eso hay tantos «n/d». La clasificación A/B/C y la tesis de encaje son criterio propio, no dato verificado. Nada de esto es asesoría de inversión ni sustituye due diligence. Ninguna cifra fue estimada o inventada: si no había fuente, dice n/d.</p>
+</footer>
+
+<script>
+const D=[
+{n:"Emi Labs",g:"Argentina / EE.UU.",geo:"LatAm",cat:"Screening de volumen",q:"IA que automatiza screening, agendamiento y onboarding en contratación masiva de trabajadores de primera línea.",et:"Serie A",r:"USD 11M · feb 2022",tot:"USD 13M",inv:"Khosla Ventures, Merus Capital, Y Combinator",val:"n/d",tier:"A",tk:"Digerible",why:"Es la capa que Computrabajo no tiene: convertir su volumen brutal de candidatos blue-collar en contrataciones cerradas. Ya trabaja con Walmart, Coca-Cola FEMSA, Burger King y Mercado Libre — los mismos empleadores que ya le compran a Computrabajo y OCC.",rk:"Cuatro años sin ronda nueva con ~68 empleados: o está cerca de rentabilidad o el runway aprieta. Solapa parcialmente con Genoma.",u:"https://www.prnewswire.com/news-releases/emi-raises-11m-to-help-enterprises-hire-better-frontline-workers-faster-301488746.html",w:"https://www.emilabs.ai"},
+{n:"Hunty",g:"Colombia",geo:"LatAm",cat:"Screening de volumen",q:"Software B2B de reclutamiento masivo con IA que automatiza filtrado y contacto de candidatos en 12 países.",et:"Seed",r:"USD 1M · ago 2025",tot:"n/d (reportada seed previa de USD 2M)",inv:"Cometa Ventures, Matterscale, Newtopia VC, Kalei",val:"n/d",tier:"A",tk:"Digerible",why:"Nativa hispanohablante, clientes de volumen (AB InBev, Rappi, Grupo Aval, BPOs) y 25% de crecimiento mensual. Compra chica que entrega equipo y producto de screening ya adaptado a LatAm.",rk:"Pivote reciente de B2C a B2B y ronda de solo USD 1M: base de ingresos frágil y sin foso tecnológico propio.",u:"https://forbes.co/2025/08/01/emprendedores/hunty-reclutamiento-ia/",w:"https://hunty.com"},
+{n:"Vervoe",g:"Australia",geo:"Global",cat:"Evaluación de skills",q:"Evaluación por simulaciones de trabajo reales, corregidas y rankeadas por IA en vez de filtrar por CV.",et:"Seed / Serie A temprana",r:"n/d · última conocida USD 3,5M liderada por SEEK",tot:"~USD 4,5M",inv:"SEEK, Ruslan Kogan, ángeles",val:"n/d",tier:"A",tk:"Digerible",why:"Precedente directo: SEEK, otro job board, ya invirtió aquí para defender su marketplace con evaluación de skills. Redarbor puede comprarla entera (~8.000 empresas usuarias) en vez de invertir.",rk:"Crecimiento lento y sin capital fresco reciente. Los tests de skills se comoditizan frente a la entrevista con IA.",u:"https://www.ere.net/articles/vervoe-raises-capital-led-by-seek",w:"https://vervoe.com"},
+{n:"Jobright.ai",g:"EE.UU.",geo:"Global",cat:"Lado candidato",q:"Agente de IA que busca vacantes, adapta el CV y postula en automático por el candidato.",et:"Seed",r:"USD 3,2M · jun 2025",tot:"USD 7,7M",inv:"Translink Capital, HR Tech Investments (afiliado a Indeed)",val:"n/d",tier:"A",tk:"Digerible",why:"Es la disrupción que amenaza al job board, convertida en activo propio: 520.000 usuarios, crecimiento 30x. Que Indeed ya esté en el cap table confirma la tesis defensiva.",rk:"B2C de baja monetización que además infla el volumen de postulaciones basura — justo el problema que las empresas pagan por evitar.",u:"https://www.finsmes.com/2025/06/jobright-raises-3-2m-in-funding/",w:"https://jobright.ai"},
+{n:"HeyMilo AI",g:"EE.UU.",geo:"Global",cat:"Entrevista con IA",q:"Agentes de IA que hacen screening eliminatorio y entrevista adaptativa por voz o video.",et:"Seed",r:"USD 2,2M · mar 2025",tot:"USD 2,2M",inv:"Canaan Partners, Alumni Ventures, ERA",val:"n/d",tier:"B",tk:"Digerible",why:"Adquisición barata de capacidad de screening propia: se embute en el flujo de postulación de Computrabajo y se cobra por candidato filtrado a la PyME.",rk:"Muy temprana. Se compra tecnología y equipo, no tracción ni ingresos relevantes.",u:"https://www.prnewswire.com/news-releases/heymilo-secures-2-2-million-to-interview-and-evaluate-candidates-at-scale-with-ai-agents-302389651.html",w:"https://www.heymilo.ai"},
+{n:"Ribbon AI",g:"Canadá",geo:"Global",cat:"Entrevista con IA",q:"Entrevistador de IA por voz para sectores de alta rotación: entrevista 24/7, transcribe, rankea y agenda.",et:"Seed",r:"USD 8,2M · mar 2025",tot:"USD 8,2M",inv:"Radical Ventures, Social Leverage, Cadenza, GD1",val:"n/d",tier:"B",tk:"Digerible",why:"Su foco en alta rotación (retail, call center, logística) es exactamente el mix de vacantes de Computrabajo en México, Colombia y Chile. Ticket todavía accesible.",rk:"Equipo de 14 personas y producto en inglés: exigiría inversión propia en localización y compliance LatAm.",u:"https://thelogic.co/briefing/ribbon-raises-us8-2m-seed-round-for-ai-hiring-tools/",w:"https://www.ribbon.ai"},
+{n:"Alex",g:"EE.UU.",geo:"Global",cat:"Entrevista con IA",q:"Reclutador de IA que conduce entrevistas por voz en tiempo real a escala y entrega scorecards comparables.",et:"Serie A",r:"USD 17M · sep 2025 (USD 20M con seed)",tot:"USD 20M",inv:"Peak XV Partners, 1984 Ventures, Y Combinator, CHROs Fortune 500",val:"n/d",tier:"B",tk:"Medio",why:"Permitiría a Computrabajo vender «entrevista previa ya hecha» como producto pago a la PyME que no tiene reclutador, subiendo el ticket por vacante publicada.",rk:"Categoría saturada (Ribbon, HeyMilo, Mercor, micro1) y dependiente de modelos de terceros: comoditización rápida de precio.",u:"https://www.prnewswire.com/news-releases/alex-secures-20m-to-revolutionize-ai-powered-recruiting-and-help-ai-hire-more-humans-302569001.html",w:"https://www.alex.com"},
+{n:"Truora",g:"Colombia",geo:"LatAm",cat:"Verificación y antifraude",q:"Verificación de antecedentes, identidad y onboarding por WhatsApp con validación documental y facial.",et:"Serie A",r:"USD 15M · abr 2022",tot:"USD 21,9M",inv:"Propel Venture Partners, Accel, Kaszek, Y Combinator",val:"USD 75M post-money (2022)",tier:"B",tk:"Digerible",why:"Doble golpe: producto de pago por transacción vendible como upsell a las empresas de Computrabajo y OCC, y defensa contra el candidato falso generado con IA en el canal real de LatAm, WhatsApp.",rk:"Su negocio hoy pesa más en fintech/KYC que en RRHH; habría que reorientar el go-to-market. Compite con Incode y Persona, mejor capitalizados.",u:"https://techcrunch.com/2022/04/08/vcs-unicorn-founders-pump-15m-into-truora-a-colombian-startup-that-helps-companies-onboard-users-via-whatsapp/",w:"https://www.truora.com"},
+{n:"Corsound AI",g:"Israel",geo:"Global",cat:"Verificación y antifraude",q:"Detección de deepfakes de voz en tiempo real y matching voz-a-rostro para verificar quién habla de verdad.",et:"Seed",r:"n/d · sin ronda anunciada",tot:"~USD 5,1M (trackers)",inv:"Awz Ventures, Finovate, Israel Innovation Authority",val:"n/d",tier:"B",tk:"Digerible",why:"Si Computrabajo suma entrevistas con IA, necesita antifraude nativo. Detecta voz clonada y suplantación, con 200+ patentes, y es licenciable a precio chico.",rk:"Es deep tech de seguridad, no HR tech: no trae clientes de reclutamiento y exige integración y go-to-market propios.",u:"https://www.cbinsights.com/company/corsound-ai/",w:"https://www.corsound.ai"},
+{n:"Final Round AI",g:"EE.UU.",geo:"Global",cat:"Lado candidato",q:"Copiloto del candidato: prepara entrevistas, optimiza el CV para ATS y asiste en tiempo real.",et:"Seed",r:"USD 6,88M · ene 2025",tot:"USD 6,88M",inv:"Uncork Capital, HF0, Linear Capital, Sky9",val:"n/d",tier:"B",tk:"Digerible",why:"Monetización directa del lado candidato de Computrabajo (suscripción de preparación y CV), donde el tráfico ya existe y hoy no genera ingreso. Su equipo declara buscar alianzas con plataformas de empleo.",rk:"Zona gris ética: asiste al candidato durante la entrevista, lo que puede chocar de frente con los clientes empresa del propio job board.",u:"https://www.prnewswire.com/news-releases/final-round-ai-secures-6-88m-in-oversubscribed-seed-funding-to-transform-the-job-search-journey-302363088.html",w:"https://www.finalroundai.com"},
+{n:"Worky",g:"México",geo:"LatAm",cat:"HR SaaS PyME",q:"Software cloud de RRHH y nómina para PyMEs mexicanas: nómina, asistencia, expedientes, analítica.",et:"Serie A",r:"USD 6M · may 2024",tot:"n/d",inv:"Atlántico, ADP Ventures",val:"n/d",tier:"B",tk:"Digerible",why:"Target chico y digerible que cierra el ciclo post-contratación justo donde Redarbor acaba de comprar OCC: nómina para la PyME mexicana como cross-sell desde Computrabajo y complemento de Pandapé.",rk:"ADP Ventures en el cap table implica un socio estratégico con derechos y posible interés propio de compra.",u:"https://businesswire.com/news/home/20240514166929/en/Worky-Raises-6-Million-to-Drive-Growth-and-Accelerate-Adoption-of-Cloud-Based-HR-and-Payroll-Solution-in-Mexico",w:"https://www.worky.mx"},
+{n:"Hosco",g:"España / Suiza",geo:"España",cat:"Vertical de nicho",q:"Portal vertical y comunidad de empleo para hotelería, restauración y turismo, con red de escuelas hoteleras.",et:"Serie A (sin ronda desde 2018)",r:"EUR 5,4M (~USD 6,3M) · 2018",tot:"~USD 20M",inv:"Nauta Capital, Athos Capital, Prince Capital Partners",val:"n/d",tier:"B",tk:"Digerible",why:"Redarbor perdió el vertical de turismo cuando Turijobs pasó a StepStone en 2017. Hosco es el único activo global de hostelería aún independiente y encaja con la base hotelera de Computrabajo en México, Caribe, Colombia y España.",rk:"Sin capital nuevo desde 2018 y tráfico concentrado en el segmento premium/escuelas: crecimiento probablemente plano.",u:"https://www.phocuswire.com/hosco-funding-5-4M",w:"https://www.hosco.com"},
+{n:"minu",g:"México",geo:"LatAm",cat:"Nómina y pagos",q:"Beneficios y salario on-demand (earned wage access) para empleados de grandes empresas.",et:"Serie B",r:"USD 30M · nov 2024",tot:"USD 47M",inv:"QED Investors, FinTech Collective, Flourish, Clocktower, Endeavor Catalyst",val:"n/d",tier:"B",tk:"Medio",why:"Monetiza el lado trabajador, que hoy Redarbor no monetiza. La base de candidatos y colocados de Computrabajo/OCC en México es el canal de adquisición más barato imaginable para adelanto de nómina.",rk:"Es fintech con riesgo de crédito y capital de trabajo: muy lejos del modelo SaaS/clasificados de Redarbor.",u:"https://www.finextra.com/pressarticle/103294/mexican-earned-wage-access-fintech-minu-raises-30-million",w:"https://www.minu.mx"},
+{n:"Payflow",g:"España",geo:"España",cat:"Nómina y pagos",q:"Salario a demanda y retribución flexible, operando en España, Portugal, Colombia y Perú.",et:"Serie B (extensión)",r:"EUR 10M (~USD 11M) · jun 2025",tot:"~EUR 27M en equity",inv:"Cusp Capital, Seaya Ventures, Cathay Innovation, Wayra, Y Combinator",val:"n/d",tier:"B",tk:"Medio",why:"Único activo que replica la huella exacta de Redarbor (Iberia + LatAm hispana) en pagos al trabajador. Permitiría empaquetar Pandapé + salario flexible en un solo contrato para PyME española y colombiana.",rk:"Cusp Capital entró como mayor accionista en 2025: la ventana de salida se abre recién en 2027-2028.",u:"https://www.eu-startups.com/2025/06/madrid-based-payflow-raises-e10-million-to-expand-their-earned-wage-access-platform-across-europe-and-lam/",w:"https://payflow.es"},
+{n:"Juicebox (PeopleGPT)",g:"EE.UU.",geo:"Global",cat:"Matching y sourcing IA",q:"Buscador de talento en lenguaje natural sobre 800M+ perfiles públicos, con agentes de sourcing y outreach.",et:"Serie A",r:"USD 30M · sep 2025",tot:"USD 36M",inv:"Sequoia Capital, Coatue, NFDG, Lux Capital, BOND, Y Combinator",val:"n/d",tier:"C",tk:"Medio",why:"Convierte la base de CVs de Computrabajo en un buscador semántico tipo prompt, monetizable como upsell de búsqueda avanzada. Ya opera sobre USD 10M de ARR con 2.500 clientes.",rk:"Ronda Sequoia 2025 probablemente fuera del rango de un comprador mediano, y su ventaja es dato público scrapeado: replicable.",u:"https://theaiinsider.tech/2025/10/08/juicebox-announces-36m-in-funding-to-redefine-ai-driven-recruiting-with-peoplegpt/",w:"https://juicebox.ai"},
+{n:"Sesame HR",g:"España",geo:"España",cat:"HR SaaS PyME",q:"Software de RRHH con IA para PyMEs: control horario, ATS, evaluación y documentos, en España y LatAm.",et:"Serie B / growth",r:"EUR 23M · may 2024 (+ hasta EUR 50M de deuda BBVA Spark, oct 2025)",tot:"n/d",inv:"GP Bullhound, PSG Equity, BBVA Spark (deuda)",val:"n/d",tier:"C",tk:"Medio",why:"El competidor español más directo de Pandapé. Comprarlo consolidaría el mercado ibérico de HR SaaS PyME y daría un producto maduro para vender a la base de empresas en LatAm.",rk:"Con PSG y GP Bullhound dentro y EUR 50M de BBVA disponibles, el precio y la posición de fuerza están del lado del vendedor. Solapamiento fuerte con Pandapé.",u:"https://psgequity.com/news/sesame-closes-new-investment-round-of-23m-to-continue-its-investment-in-ai-and-accelerate-international-expansion",w:"https://www.sesamehr.es"},
+{n:"UBITS",g:"Colombia / México",geo:"LatAm",cat:"Formación y empleabilidad",q:"Plataforma B2B de formación corporativa y upskilling (750+ cursos) para empresas de LatAm.",et:"Serie B",r:"USD 25M · ene 2022",tot:"USD 35M",inv:"Riverwood Capital, Owl Ventures, Endeavor Catalyst, Roble, Salkantay",val:"n/d",tier:"C",tk:"Medio",why:"Cierra el hueco de formación: cursos vendidos a las empresas que ya pagan Computrabajo, más una línea B2C de empleabilidad sobre millones de candidatos registrados que hoy no generan ingreso.",rk:"Riverwood Capital es el inversor principal de Jobint (Bumeran, Zonajobs, Laborum), competidor directo de Computrabajo. Conflicto de interés evidente en cualquier negociación.",u:"https://www.gunder.com/en/news-insights/client-news/ubits-raises-25m-series-b-financing",w:"https://www.ubits.com"},
+{n:"Zubale",g:"México",geo:"LatAm",cat:"Staffing y gig",q:"Marketplace y software que asigna tareas de picking, empaque y entrega a red gig para retailers en 200+ ciudades.",et:"Serie A (extensión)",r:"USD 25M · nov 2023",tot:"USD 73M",inv:"QED Investors, NFX, Kevin Efrusy",val:"n/d",tier:"C",tk:"Medio",why:"Entrada al trabajo por tarea, un segmento que los clasificados no capturan, con clientes retail (Carrefour, GPA, Cencosud, Walmart) que se solapan con los mayores anunciantes de Computrabajo en México y Brasil.",rk:"Modelo operativo intensivo con riesgo laboral y regulatorio en clasificación de trabajadores. Sin ronda nueva desde 2023.",u:"https://techcrunch.com/2023/11/30/zubale-software-retailers-e-commerce-latin-america/",w:"https://www.zubale.com"},
+{n:"Findem",g:"EE.UU.",geo:"Global",cat:"Matching y sourcing IA",q:"Talent data: construye perfiles con atributos derivados de billones de datos y calibra vacantes.",et:"Serie C",r:"USD 51M (36M equity + 15M deuda) · oct 2025",tot:"USD 105M",inv:"Silver Lake Waterman, Wing Ventures, Harmony Capital, J.P. Morgan (deuda)",val:"n/d",tier:"C",tk:"Grande",why:"Capa de enriquecimiento que mejoraría el matching y el ranking de Computrabajo sin depender de que el candidato actualice su CV. Útil para vender shortlists a grandes cuentas.",rk:"USD 105M levantados y foco enterprise US: precio alto y poco encaje con PyME hispanohablante.",u:"https://www.prnewswire.com/news-releases/findem-raises-51-million-to-transform-how-companies-hire-with-the-worlds-largest-expert-labeled-talent-dataset-302589634.html",w:"https://www.findem.ai"},
+{n:"Sólides",g:"Brasil",geo:"LatAm",cat:"HR SaaS PyME",q:"Suite de gestión de personas para PyMEs brasileñas: perfil comportamental, ATS, desempeño, nómina y beneficios.",et:"Serie B (PE)",r:"R$ 530M (~USD 100M) · feb 2022",tot:"USD 104M",inv:"Warburg Pincus, DGF Investimentos",val:"n/d",tier:"C",tk:"Grande",why:"Brasil es hoy el mercado más grande de Redarbor tras Catho e InfoJobs Brasil. Sólides aportaría 40.000 clientes PyME para vender vacantes cruzadas y una versión local de Pandapé ya escalada.",rk:"Activo controlado por private equity con meta de R$ 1.000M de facturación a 2028: probablemente demasiado caro y grande para el balance de Redarbor.",u:"https://exame.com/pme/solides-hrtech-das-pmes-recebe-aporte-de-r-530-milhoes/",w:"https://solides.com.br"},
+{n:"Buk",g:"Chile",geo:"LatAm",cat:"Nómina y pagos",q:"Gestión de personas y nómina para empresas medianas y grandes: 7.000 clientes, 1,5M+ de empleados.",et:"Serie B",r:"USD 50M · ene 2025",tot:"n/d (USD 50M en 2021, USD 35M, USD 50M en 2025)",inv:"Headline, Workday, Greenoaks, Base10, Endeavor Catalyst",val:"~USD 850M (ene 2025)",tier:"C",tk:"Grande",why:"Sería el salto de clasificados a HCM regional de verdad: cubre Chile, Perú y Colombia, mercados fuertes de Computrabajo donde Pandapé es débil, y trae nómina real, no solo reclutamiento.",rk:"A USD 850M vale más que todo Redarbor, y Workday ya está en el cap table. Solo viable como fusión o inversión minoritaria.",u:"https://www.finsmes.com/2025/01/buk-raised-usd50m-in-series-b-valued-at-approximately-us850m.html",w:"https://www.buk.cl"},
+{n:"Job&Talent",g:"España",geo:"España",cat:"Staffing y gig",q:"Plataforma digital de trabajo temporal: 300.000+ colocaciones en 2024 en logística, almacén y retail.",et:"Serie F",r:"EUR 92M (~USD 103M) · abr 2025, en down round",tot:"n/d (>USD 1.000M acumulado)",inv:"Atomico, BlackRock, Kinnevik, DN Capital, InfraVia, Kibo",val:"EUR 1.300M (abr 2025)",tier:"C",tk:"Grande",why:"Es la capacidad que Redarbor no tiene: pasar de cobrar por publicar vacantes a cobrar por colocar y facturar horas trabajadas — margen por trabajador en vez de por anuncio.",rk:"Intensivo en capital y con márgenes de ETT. Vale diez veces Redarbor y ya está en down round: cabe como socio o comprador, no como target.",u:"https://techcrunch.com/2025/04/10/jobandtalent-raises-103m-on-a-down-round-1-5b-valuation-as-it-looks-to-ai-to-recruit-temps/",w:"https://www.jobandtalent.com"}
+];
+
+const TIER={A:"A · MOVER AHORA",B:"B · VIGILAR",C:"C · SOLO ALIANZA"};
+const TKO={Digerible:0,Medio:1,Grande:2}, TRO={A:0,B:1,C:2};
+const st={cat:"Todas",geo:"Todas",tk:"Todos",sort:"tier"};
+
+function chips(id,key,vals){
+  const el=document.getElementById(id);
+  vals.forEach(v=>{
+    const b=document.createElement("button");
+    b.className="chip";b.textContent=v;b.setAttribute("aria-pressed",st[key]===v);
+    b.onclick=()=>{st[key]=v;[...el.querySelectorAll(".chip")].forEach(c=>c.setAttribute("aria-pressed",c.textContent===v));render()};
+    el.appendChild(b);
+  });
+}
+const uniq=k=>[...new Set(D.map(d=>d[k]))].sort();
+chips("f-cat","cat",["Todas",...uniq("cat")]);
+chips("f-geo","geo",["Todas",...uniq("geo")]);
+chips("f-tk","tk",["Todos","Digerible","Medio","Grande"]);
+document.getElementById("sort").onchange=e=>{st.sort=e.target.value;render()};
+
+function render(){
+  let r=D.filter(d=>(st.cat==="Todas"||d.cat===st.cat)&&(st.geo==="Todas"||d.geo===st.geo)&&(st.tk==="Todos"||d.tk===st.tk));
+  const s={tier:(a,b)=>TRO[a.tier]-TRO[b.tier]||TKO[a.tk]-TKO[b.tk]||a.n.localeCompare(b.n),
+           ticket:(a,b)=>TKO[a.tk]-TKO[b.tk]||TRO[a.tier]-TRO[b.tier],
+           az:(a,b)=>a.n.localeCompare(b.n),
+           geo:(a,b)=>a.geo.localeCompare(b.geo)||TRO[a.tier]-TRO[b.tier]}[st.sort];
+  r.sort(s);
+  document.getElementById("count").innerHTML="<b>"+r.length+"</b> / "+D.length;
+  const g=document.getElementById("grid");
+  if(!r.length){g.innerHTML='<div class="empty">Ningún activo cumple ese cruce de filtros.</div>';return}
+  g.innerHTML=r.map(d=>`<article class="card t-${d.tier}">
+    <div class="ch">
+      <div><div class="nm"><a href="${d.w}" target="_blank" rel="noopener">${d.n}</a></div><div class="geo">${d.g}</div></div>
+      <div class="tier">${TIER[d.tier]}</div>
+    </div>
+    <p class="que">${d.q}</p>
+    <div class="tags"><span class="tag">${d.cat}</span><span class="tag">Ticket ${d.tk}</span><span class="tag">${d.et}</span></div>
+    <div class="facts">
+      <div><span>Última ronda</span>${d.r}</div>
+      <div><span>Total levantado</span>${d.tot}</div>
+      <div><span>Valuación</span>${d.val}</div>
+      <div><span>Inversores</span>${d.inv}</div>
+    </div>
+    <div class="why"><span>Por qué le suma a Redarbor</span>${d.why}</div>
+    <div class="rk"><span>La pega</span>${d.rk}</div>
+    <div class="src"><a href="${d.u}" target="_blank" rel="noopener">Fuente del dato de financiamiento ↗</a></div>
+  </article>`).join("");
+}
+render();
+</script>
+</body>
+</html>
