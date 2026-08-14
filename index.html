@@ -2,217 +2,264 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Radar M&amp;A · Redarbor</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Radar · Startups para Redarbor</title>
 <style>
   :root{
-    --bg:#0d0f14; --panel:#14171f; --panel2:#1a1e28; --line:#252a36;
-    --txt:#e8e6e1; --dim:#8b93a4; --dimmer:#5d6577;
-    --a:#c8f542; --b:#ffb347; --c:#6b7688;
-    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+    --bg:#fbfaf7;--surface:#fff;--text:#2f3835;--muted:#6f7b76;--soft:#9ba7a2;
+    --line:#e4eae6;--accent:#789985;--accent2:#9b90b3;--accentSoft:#edf5ef;
+    --red:#c47782;--green:#668d79;--amber:#b08d5b
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  *{box-sizing:border-box;margin:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:
+      radial-gradient(circle at 8% 0,rgba(223,236,227,.8) 0,transparent 27%),
+      radial-gradient(circle at 96% 4%,rgba(235,231,244,.75) 0,transparent 25%),
+      radial-gradient(circle at 72% 86%,rgba(247,232,219,.45) 0,transparent 24%),
+      var(--bg);
+    color:var(--text);font:15px/1.6 -apple-system,'Helvetica Neue',sans-serif;padding:26px 20px 90px
+  }
+  .wrap{max-width:640px;margin:0 auto}
+  .hide{display:none!important}
+  h1{font-family:Georgia,serif;font-size:28px;font-weight:400;letter-spacing:-.5px}
+  .sub{color:var(--muted);font-size:13px;margin-top:2px}
+  section{margin-top:34px}
+  h2{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#7d8984;font-weight:600;padding-bottom:5px;margin-bottom:6px}
+  .mode{font-size:11px;color:var(--soft);margin-top:6px}
 
-  /* HEADER */
-  header{border-bottom:1px solid var(--line);padding:52px 0 34px;position:relative;overflow:hidden}
-  header::after{content:"";position:absolute;top:-120px;right:-60px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(200,245,66,.09),transparent 70%);pointer-events:none}
-  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--a);margin-bottom:16px}
-  h1{font-family:var(--serif);font-size:clamp(34px,5.6vw,58px);line-height:1.03;font-weight:400;letter-spacing:-.02em;max-width:18ch}
-  h1 em{font-style:italic;color:var(--a)}
-  .lede{color:var(--dim);max-width:62ch;margin-top:18px;font-size:15.5px}
-  .meta{display:flex;gap:26px;flex-wrap:wrap;margin-top:26px;font-family:var(--mono);font-size:11px;color:var(--dimmer);letter-spacing:.06em;text-transform:uppercase}
-  .meta b{color:var(--txt);font-weight:500}
+  /* reja */
+  #pin{position:fixed;inset:0;background:var(--bg);z-index:99;display:flex;align-items:center;justify-content:center}
+  #pin .box{text-align:center;padding:20px}
+  #pin input{border:1px solid var(--line);border-radius:12px;padding:13px;font-size:17px;text-align:center;width:200px;background:#fff;margin-top:14px;font-family:inherit}
+  #pin .err{color:var(--red);font-size:13px;margin-top:8px;visibility:hidden}
+  #pin .err.show{visibility:visible}
+  #pin .cry{margin-top:20px;font-size:10.5px;color:var(--soft);letter-spacing:.4px}
 
-  /* CONTEXT STRIP */
-  .ctx{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
-  .ctx div{background:var(--bg);padding:20px 20px}
-  .ctx span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dimmer);margin-bottom:7px}
-  .ctx p{font-size:13.5px;color:var(--dim)}
-  .ctx p b{color:var(--txt);font-weight:600}
+  /* kpis */
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;background:rgba(255,255,255,.82);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 30px rgba(55,69,62,.05);overflow:hidden;padding:2px}
+  .kpi{padding:13px 4px;text-align:center;border-radius:13px}
+  .kpi .n{font-family:Georgia,serif;font-size:26px;color:#648471;display:block}
+  .kpi .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
+  .home-kpis{margin-top:22px}
 
-  /* CONTROLS */
-  .controls{position:sticky;top:0;z-index:20;background:rgba(13,15,20,.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:16px 0}
-  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .row+.row{margin-top:10px}
-  .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer);margin-right:4px;min-width:64px}
-  .chip{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 11px;border:1px solid var(--line);border-radius:20px;background:transparent;color:var(--dim);cursor:pointer;transition:.15s}
-  .chip:hover{border-color:var(--dimmer);color:var(--txt)}
-  .chip[aria-pressed="true"]{background:var(--a);border-color:var(--a);color:#0d0f14;font-weight:600}
-  .spacer{flex:1}
-  select{font-family:var(--mono);font-size:11px;background:var(--panel);color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:6px 9px;cursor:pointer}
-  .count{font-family:var(--mono);font-size:11px;color:var(--dimmer);letter-spacing:.06em}
-  .count b{color:var(--a)}
+  /* filtros */
+  .filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .fchip{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;padding:5px 11px;border-radius:20px;border:1px solid var(--line);color:var(--muted);background:rgba(255,255,255,.6);cursor:pointer;font-family:inherit}
+  .fchip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+  select{font:inherit;font-size:12px;color:var(--muted);background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:20px;padding:5px 9px;cursor:pointer}
+  .fcount{font-size:11px;color:var(--soft);margin-left:auto}
 
-  /* GRID */
-  main{padding:30px 0 70px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;transition:.18s;position:relative}
-  .card:hover{border-color:#38404f;transform:translateY(-2px)}
-  .card.t-A{border-left:3px solid var(--a)}
-  .card.t-B{border-left:3px solid var(--b)}
-  .card.t-C{border-left:3px solid var(--c)}
-  .ch{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-  .nm{font-family:var(--serif);font-size:22px;line-height:1.15;letter-spacing:-.01em}
-  .nm a{color:inherit;text-decoration:none;border-bottom:1px solid transparent}
-  .nm a:hover{border-bottom-color:var(--a);color:var(--a)}
-  .geo{font-family:var(--mono);font-size:10px;color:var(--dimmer);letter-spacing:.1em;text-transform:uppercase;margin-top:5px}
-  .tier{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;padding:4px 8px;border-radius:4px;white-space:nowrap}
-  .t-A .tier{background:rgba(200,245,66,.14);color:var(--a)}
-  .t-B .tier{background:rgba(255,179,71,.13);color:var(--b)}
-  .t-C .tier{background:rgba(107,118,136,.16);color:#94a0b5}
-  .que{font-size:13.5px;color:var(--dim)}
-  .tags{display:flex;gap:5px;flex-wrap:wrap}
-  .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--dimmer);border:1px solid var(--line);padding:3px 7px;border-radius:4px}
-  .facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-radius:8px;overflow:hidden;font-size:12.5px}
-  .facts div{background:var(--panel2);padding:9px 11px}
-  .facts div:nth-child(odd):last-child{grid-column:1/-1}
-  .facts span{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dimmer);margin-bottom:3px}
-  .why{border-top:1px solid var(--line);padding-top:12px;font-size:13px}
-  .why span{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--a);display:block;margin-bottom:5px}
-  .rk{font-size:12.5px;color:var(--dim);margin-top:11px;padding-left:13px;border-left:2px solid #3a3226}
-  .rk span{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--b);display:block;margin-bottom:4px}
-  .src{margin-top:auto;padding-top:4px}
-  .src a{font-family:var(--mono);font-size:10px;color:var(--dimmer);letter-spacing:.06em;text-decoration:none;border-bottom:1px dotted var(--dimmer)}
-  .src a:hover{color:var(--a);border-bottom-color:var(--a)}
-  .empty{text-align:center;padding:70px 20px;color:var(--dimmer);font-family:var(--mono);font-size:12px}
+  /* grupos y filas */
+  .idea-groups{margin-top:24px}
+  .idea-group{margin-top:24px}
+  .idea-group:first-child{margin-top:0}
+  .idea-group-note{font-size:11px;color:var(--soft);margin-bottom:2px}
+  .prow{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid var(--line);cursor:pointer;min-height:52px;width:100%;text-align:left;background:none;border-left:0;border-right:0;border-top:0;font:inherit;color:inherit}
+  .prow:active{background:#eff4f0}
+  .prow .pos{font-family:Georgia,serif;font-size:20px;color:var(--soft);width:20px;flex-shrink:0}
+  .prow .nm{flex:1;font-size:15.5px;min-width:0}
+  .prow .who{display:block;font-size:11.5px;color:var(--muted);margin-top:1px}
+  .prow .refline{display:block;font-size:11px;color:var(--accent);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prow .sc{font-family:Georgia,serif;font-size:19px;color:var(--accent);min-width:38px;text-align:right}
+  .chip{font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:20px;border:1px solid var(--line);color:var(--muted);flex-shrink:0;display:inline-block}
+  .chip.a{color:var(--green);border-color:var(--green)}
+  .chip.b{color:var(--amber);border-color:#d5c2a0}
+  .chip.c{color:var(--soft)}
+  .empty{color:var(--soft);font-size:13.5px;padding:14px 0}
 
-  footer{border-top:1px solid var(--line);padding:30px 0 50px;font-size:12.5px;color:var(--dimmer)}
-  footer p{max-width:70ch}
-  footer b{color:var(--dim)}
-  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:18px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
-  .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:middle}
-  @media(max-width:600px){.lbl{min-width:100%;margin-bottom:2px}.facts{grid-template-columns:1fr}header{padding:36px 0 26px}}
+  /* detalle */
+  .back{background:none;border:none;color:var(--muted);font-size:14px;padding:0 0 14px;cursor:pointer;font-family:inherit}
+  .dhead h1{font-size:24px}
+  .dchips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+  .dq{margin-top:14px;font-size:14.5px;color:#414c48}
+  .tblwrap{width:100%;overflow-x:auto;margin:16px 0 0}
+  .tbl{width:100%;border-collapse:collapse;font-size:13px}
+  .tbl th,.tbl td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+  .tbl th{background:#f1f5f2;font-weight:600;width:38%;color:var(--muted)}
+  .blk{margin-top:18px;background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:14px;padding:14px 15px;box-shadow:0 8px 30px rgba(55,69,62,.04)}
+  .blk h3{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);font-weight:600;margin-bottom:6px}
+  .blk.risk h3{color:var(--amber)}
+  .blk p{font-size:13.5px;color:#414c48}
+  .links{margin-top:18px;display:flex;flex-direction:column;gap:7px}
+  .links a{font-size:12.5px;color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(120,153,133,.3);align-self:flex-start}
+
+  /* method */
+  .method-panel{display:block;margin-top:34px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 30px rgba(55,69,62,.05)}
+  .method-panel summary{list-style:none;padding:14px 16px;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#7d8984;font-weight:600;cursor:pointer}
+  .method-panel summary::-webkit-details-marker{display:none}
+  .method-panel[open] summary{border-bottom:1px solid var(--line)}
+  .method-content{padding:14px 16px}
+  .method-content p{font-size:13px;color:#4c5854;margin-bottom:9px}
+  .method-content p b{color:var(--text)}
+  .ctxgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .ctxgrid div{background:var(--accentSoft);border-radius:11px;padding:11px 12px}
+  .ctxgrid span{display:block;font-size:9.5px;text-transform:uppercase;letter-spacing:.9px;color:#7d8984;font-weight:600;margin-bottom:4px}
+  .ctxgrid p{font-size:12px;color:#4c5854;margin:0}
+  .site-footer{padding:34px 0 10px;text-align:center;color:var(--soft);font-size:11.5px}
+  @media(max-width:700px){
+    body{padding:22px 12px 60px}
+    .home-head h1{font-size:23px;line-height:1.2}
+    .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .ctxgrid{grid-template-columns:1fr}
+    .fcount{margin-left:0;width:100%}
+  }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="wrap">
-    <div class="kicker">Radar de adquisición · Agosto 2026</div>
-    <h1>22 startups que le podrían <em>sumar mucho</em> a Redarbor</h1>
-    <p class="lede">Lectura de compra: qué activo cierra un hueco real del grupo, a qué precio aproximado, y qué pega tiene. Ordenado por lo que se puede mover ahora, no por lo que suena mejor.</p>
-    <div class="meta">
-      <span><b>22</b> compañías</span>
-      <span><b>10</b> categorías</span>
-      <span>Datos <b>2022–2026</b>, cada monto con fuente</span>
-      <span>n/d = <b>no publicado</b></span>
-    </div>
-  </div>
-</header>
-
-<div class="ctx wrap" style="max-width:1180px">
-  <div><span>Quién es Redarbor</span><p>Grupo español (Sant Cugat, 2013). Portafolio: <b>Computrabajo</b> (21 países), <b>InfoJobs Brasil</b>, <b>Catho</b>, <b>OCC Mundial</b>, <b>Pandapé</b>, <b>Genoma</b>.</p></div>
-  <div><span>Capital y tamaño</span><p><b>Vitruvian Partners</b> entró con minoritaria en 2024 para financiar Catho + OCC (<b>USD 85M</b> a SEEK). Ingresos ~<b>EUR 120M</b> en 2024.</p></div>
-  <div><span>Los huecos reales</span><p>No monetiza al candidato. No cobra por colocar, solo por publicar. Matching débil. Sin antifraude de IA. Pandapé compite abajo.</p></div>
-  <div><span>Ojo con esto</span><p><b>Turijobs</b> es de StepStone desde 2017. <b>Bumeran</b> es de Jobint (Riverwood), competidor. Eso contamina a UBITS.</p></div>
-</div>
-
-<div class="controls">
-  <div class="wrap">
-    <div class="row" id="f-cat"><span class="lbl">Categoría</span></div>
-    <div class="row" id="f-geo"><span class="lbl">Geografía</span></div>
-    <div class="row">
-      <span class="lbl">Ticket</span><span id="f-tk" style="display:contents"></span>
-      <span class="spacer"></span>
-      <select id="sort">
-        <option value="tier">Prioridad de compra</option>
-        <option value="ticket">Ticket: barato primero</option>
-        <option value="az">Nombre A–Z</option>
-        <option value="geo">Geografía</option>
-      </select>
-      <span class="count" id="count"></span>
-    </div>
+<div id="pin">
+  <div class="box">
+    <h1>Radar · Startups</h1>
+    <div class="sub">Contenido cifrado. Pide la clave a Fabián.</div>
+    <input id="pinInput" type="password" placeholder="clave" autocomplete="off" inputmode="text">
+    <div class="err" id="pinErr">Clave incorrecta</div>
+    <div class="cry">AES-256-GCM · PBKDF2-SHA256 · 200.000 iteraciones</div>
   </div>
 </div>
 
-<main class="wrap"><div class="grid" id="grid"></div></main>
-
-<footer class="wrap">
-  <div class="legend">
-    <span><i style="background:var(--a)"></i>A · Mover ahora</span>
-    <span><i style="background:var(--b)"></i>B · Vigilar / conversación exploratoria</span>
-    <span><i style="background:var(--c)"></i>C · Fuera de alcance, solo alianza</span>
+<div class="wrap hide" id="home">
+  <div class="home-head">
+    <h1>Radar · Startups para Redarbor</h1>
+    <div class="sub">Qué comprar, a qué precio y con qué pega</div>
+    <div class="mode" id="mode"></div>
   </div>
-  <p><b>Método y límites.</b> Investigación de fuentes públicas (prensa especializada, notas de prensa de las rondas, trackers). Los montos son los últimos anunciados públicamente: las valuaciones privadas rara vez se publican, por eso hay tantos «n/d». La clasificación A/B/C y la tesis de encaje son criterio propio, no dato verificado. Nada de esto es asesoría de inversión ni sustituye due diligence. Ninguna cifra fue estimada o inventada: si no había fuente, dice n/d.</p>
-</footer>
+  <section class="home-kpis"><div class="kpis" id="kpis"></div></section>
+  <section>
+    <h2>Filtrar</h2>
+    <div class="filters" id="filters"></div>
+  </section>
+  <section class="idea-groups"><div id="list"></div></section>
+  <details class="method-panel">
+    <summary>Contexto, método y límites</summary>
+    <div class="method-content" id="method"></div>
+  </details>
+  <footer class="site-footer" id="foot"></footer>
+</div>
+
+<div class="wrap hide" id="detail"></div>
 
 <script>
-const D=[
-{n:"Emi Labs",g:"Argentina / EE.UU.",geo:"LatAm",cat:"Screening de volumen",q:"IA que automatiza screening, agendamiento y onboarding en contratación masiva de trabajadores de primera línea.",et:"Serie A",r:"USD 11M · feb 2022",tot:"USD 13M",inv:"Khosla Ventures, Merus Capital, Y Combinator",val:"n/d",tier:"A",tk:"Digerible",why:"Es la capa que Computrabajo no tiene: convertir su volumen brutal de candidatos blue-collar en contrataciones cerradas. Ya trabaja con Walmart, Coca-Cola FEMSA, Burger King y Mercado Libre — los mismos empleadores que ya le compran a Computrabajo y OCC.",rk:"Cuatro años sin ronda nueva con ~68 empleados: o está cerca de rentabilidad o el runway aprieta. Solapa parcialmente con Genoma.",u:"https://www.prnewswire.com/news-releases/emi-raises-11m-to-help-enterprises-hire-better-frontline-workers-faster-301488746.html",w:"https://www.emilabs.ai"},
-{n:"Hunty",g:"Colombia",geo:"LatAm",cat:"Screening de volumen",q:"Software B2B de reclutamiento masivo con IA que automatiza filtrado y contacto de candidatos en 12 países.",et:"Seed",r:"USD 1M · ago 2025",tot:"n/d (reportada seed previa de USD 2M)",inv:"Cometa Ventures, Matterscale, Newtopia VC, Kalei",val:"n/d",tier:"A",tk:"Digerible",why:"Nativa hispanohablante, clientes de volumen (AB InBev, Rappi, Grupo Aval, BPOs) y 25% de crecimiento mensual. Compra chica que entrega equipo y producto de screening ya adaptado a LatAm.",rk:"Pivote reciente de B2C a B2B y ronda de solo USD 1M: base de ingresos frágil y sin foso tecnológico propio.",u:"https://forbes.co/2025/08/01/emprendedores/hunty-reclutamiento-ia/",w:"https://hunty.com"},
-{n:"Vervoe",g:"Australia",geo:"Global",cat:"Evaluación de skills",q:"Evaluación por simulaciones de trabajo reales, corregidas y rankeadas por IA en vez de filtrar por CV.",et:"Seed / Serie A temprana",r:"n/d · última conocida USD 3,5M liderada por SEEK",tot:"~USD 4,5M",inv:"SEEK, Ruslan Kogan, ángeles",val:"n/d",tier:"A",tk:"Digerible",why:"Precedente directo: SEEK, otro job board, ya invirtió aquí para defender su marketplace con evaluación de skills. Redarbor puede comprarla entera (~8.000 empresas usuarias) en vez de invertir.",rk:"Crecimiento lento y sin capital fresco reciente. Los tests de skills se comoditizan frente a la entrevista con IA.",u:"https://www.ere.net/articles/vervoe-raises-capital-led-by-seek",w:"https://vervoe.com"},
-{n:"Jobright.ai",g:"EE.UU.",geo:"Global",cat:"Lado candidato",q:"Agente de IA que busca vacantes, adapta el CV y postula en automático por el candidato.",et:"Seed",r:"USD 3,2M · jun 2025",tot:"USD 7,7M",inv:"Translink Capital, HR Tech Investments (afiliado a Indeed)",val:"n/d",tier:"A",tk:"Digerible",why:"Es la disrupción que amenaza al job board, convertida en activo propio: 520.000 usuarios, crecimiento 30x. Que Indeed ya esté en el cap table confirma la tesis defensiva.",rk:"B2C de baja monetización que además infla el volumen de postulaciones basura — justo el problema que las empresas pagan por evitar.",u:"https://www.finsmes.com/2025/06/jobright-raises-3-2m-in-funding/",w:"https://jobright.ai"},
-{n:"HeyMilo AI",g:"EE.UU.",geo:"Global",cat:"Entrevista con IA",q:"Agentes de IA que hacen screening eliminatorio y entrevista adaptativa por voz o video.",et:"Seed",r:"USD 2,2M · mar 2025",tot:"USD 2,2M",inv:"Canaan Partners, Alumni Ventures, ERA",val:"n/d",tier:"B",tk:"Digerible",why:"Adquisición barata de capacidad de screening propia: se embute en el flujo de postulación de Computrabajo y se cobra por candidato filtrado a la PyME.",rk:"Muy temprana. Se compra tecnología y equipo, no tracción ni ingresos relevantes.",u:"https://www.prnewswire.com/news-releases/heymilo-secures-2-2-million-to-interview-and-evaluate-candidates-at-scale-with-ai-agents-302389651.html",w:"https://www.heymilo.ai"},
-{n:"Ribbon AI",g:"Canadá",geo:"Global",cat:"Entrevista con IA",q:"Entrevistador de IA por voz para sectores de alta rotación: entrevista 24/7, transcribe, rankea y agenda.",et:"Seed",r:"USD 8,2M · mar 2025",tot:"USD 8,2M",inv:"Radical Ventures, Social Leverage, Cadenza, GD1",val:"n/d",tier:"B",tk:"Digerible",why:"Su foco en alta rotación (retail, call center, logística) es exactamente el mix de vacantes de Computrabajo en México, Colombia y Chile. Ticket todavía accesible.",rk:"Equipo de 14 personas y producto en inglés: exigiría inversión propia en localización y compliance LatAm.",u:"https://thelogic.co/briefing/ribbon-raises-us8-2m-seed-round-for-ai-hiring-tools/",w:"https://www.ribbon.ai"},
-{n:"Alex",g:"EE.UU.",geo:"Global",cat:"Entrevista con IA",q:"Reclutador de IA que conduce entrevistas por voz en tiempo real a escala y entrega scorecards comparables.",et:"Serie A",r:"USD 17M · sep 2025 (USD 20M con seed)",tot:"USD 20M",inv:"Peak XV Partners, 1984 Ventures, Y Combinator, CHROs Fortune 500",val:"n/d",tier:"B",tk:"Medio",why:"Permitiría a Computrabajo vender «entrevista previa ya hecha» como producto pago a la PyME que no tiene reclutador, subiendo el ticket por vacante publicada.",rk:"Categoría saturada (Ribbon, HeyMilo, Mercor, micro1) y dependiente de modelos de terceros: comoditización rápida de precio.",u:"https://www.prnewswire.com/news-releases/alex-secures-20m-to-revolutionize-ai-powered-recruiting-and-help-ai-hire-more-humans-302569001.html",w:"https://www.alex.com"},
-{n:"Truora",g:"Colombia",geo:"LatAm",cat:"Verificación y antifraude",q:"Verificación de antecedentes, identidad y onboarding por WhatsApp con validación documental y facial.",et:"Serie A",r:"USD 15M · abr 2022",tot:"USD 21,9M",inv:"Propel Venture Partners, Accel, Kaszek, Y Combinator",val:"USD 75M post-money (2022)",tier:"B",tk:"Digerible",why:"Doble golpe: producto de pago por transacción vendible como upsell a las empresas de Computrabajo y OCC, y defensa contra el candidato falso generado con IA en el canal real de LatAm, WhatsApp.",rk:"Su negocio hoy pesa más en fintech/KYC que en RRHH; habría que reorientar el go-to-market. Compite con Incode y Persona, mejor capitalizados.",u:"https://techcrunch.com/2022/04/08/vcs-unicorn-founders-pump-15m-into-truora-a-colombian-startup-that-helps-companies-onboard-users-via-whatsapp/",w:"https://www.truora.com"},
-{n:"Corsound AI",g:"Israel",geo:"Global",cat:"Verificación y antifraude",q:"Detección de deepfakes de voz en tiempo real y matching voz-a-rostro para verificar quién habla de verdad.",et:"Seed",r:"n/d · sin ronda anunciada",tot:"~USD 5,1M (trackers)",inv:"Awz Ventures, Finovate, Israel Innovation Authority",val:"n/d",tier:"B",tk:"Digerible",why:"Si Computrabajo suma entrevistas con IA, necesita antifraude nativo. Detecta voz clonada y suplantación, con 200+ patentes, y es licenciable a precio chico.",rk:"Es deep tech de seguridad, no HR tech: no trae clientes de reclutamiento y exige integración y go-to-market propios.",u:"https://www.cbinsights.com/company/corsound-ai/",w:"https://www.corsound.ai"},
-{n:"Final Round AI",g:"EE.UU.",geo:"Global",cat:"Lado candidato",q:"Copiloto del candidato: prepara entrevistas, optimiza el CV para ATS y asiste en tiempo real.",et:"Seed",r:"USD 6,88M · ene 2025",tot:"USD 6,88M",inv:"Uncork Capital, HF0, Linear Capital, Sky9",val:"n/d",tier:"B",tk:"Digerible",why:"Monetización directa del lado candidato de Computrabajo (suscripción de preparación y CV), donde el tráfico ya existe y hoy no genera ingreso. Su equipo declara buscar alianzas con plataformas de empleo.",rk:"Zona gris ética: asiste al candidato durante la entrevista, lo que puede chocar de frente con los clientes empresa del propio job board.",u:"https://www.prnewswire.com/news-releases/final-round-ai-secures-6-88m-in-oversubscribed-seed-funding-to-transform-the-job-search-journey-302363088.html",w:"https://www.finalroundai.com"},
-{n:"Worky",g:"México",geo:"LatAm",cat:"HR SaaS PyME",q:"Software cloud de RRHH y nómina para PyMEs mexicanas: nómina, asistencia, expedientes, analítica.",et:"Serie A",r:"USD 6M · may 2024",tot:"n/d",inv:"Atlántico, ADP Ventures",val:"n/d",tier:"B",tk:"Digerible",why:"Target chico y digerible que cierra el ciclo post-contratación justo donde Redarbor acaba de comprar OCC: nómina para la PyME mexicana como cross-sell desde Computrabajo y complemento de Pandapé.",rk:"ADP Ventures en el cap table implica un socio estratégico con derechos y posible interés propio de compra.",u:"https://businesswire.com/news/home/20240514166929/en/Worky-Raises-6-Million-to-Drive-Growth-and-Accelerate-Adoption-of-Cloud-Based-HR-and-Payroll-Solution-in-Mexico",w:"https://www.worky.mx"},
-{n:"Hosco",g:"España / Suiza",geo:"España",cat:"Vertical de nicho",q:"Portal vertical y comunidad de empleo para hotelería, restauración y turismo, con red de escuelas hoteleras.",et:"Serie A (sin ronda desde 2018)",r:"EUR 5,4M (~USD 6,3M) · 2018",tot:"~USD 20M",inv:"Nauta Capital, Athos Capital, Prince Capital Partners",val:"n/d",tier:"B",tk:"Digerible",why:"Redarbor perdió el vertical de turismo cuando Turijobs pasó a StepStone en 2017. Hosco es el único activo global de hostelería aún independiente y encaja con la base hotelera de Computrabajo en México, Caribe, Colombia y España.",rk:"Sin capital nuevo desde 2018 y tráfico concentrado en el segmento premium/escuelas: crecimiento probablemente plano.",u:"https://www.phocuswire.com/hosco-funding-5-4M",w:"https://www.hosco.com"},
-{n:"minu",g:"México",geo:"LatAm",cat:"Nómina y pagos",q:"Beneficios y salario on-demand (earned wage access) para empleados de grandes empresas.",et:"Serie B",r:"USD 30M · nov 2024",tot:"USD 47M",inv:"QED Investors, FinTech Collective, Flourish, Clocktower, Endeavor Catalyst",val:"n/d",tier:"B",tk:"Medio",why:"Monetiza el lado trabajador, que hoy Redarbor no monetiza. La base de candidatos y colocados de Computrabajo/OCC en México es el canal de adquisición más barato imaginable para adelanto de nómina.",rk:"Es fintech con riesgo de crédito y capital de trabajo: muy lejos del modelo SaaS/clasificados de Redarbor.",u:"https://www.finextra.com/pressarticle/103294/mexican-earned-wage-access-fintech-minu-raises-30-million",w:"https://www.minu.mx"},
-{n:"Payflow",g:"España",geo:"España",cat:"Nómina y pagos",q:"Salario a demanda y retribución flexible, operando en España, Portugal, Colombia y Perú.",et:"Serie B (extensión)",r:"EUR 10M (~USD 11M) · jun 2025",tot:"~EUR 27M en equity",inv:"Cusp Capital, Seaya Ventures, Cathay Innovation, Wayra, Y Combinator",val:"n/d",tier:"B",tk:"Medio",why:"Único activo que replica la huella exacta de Redarbor (Iberia + LatAm hispana) en pagos al trabajador. Permitiría empaquetar Pandapé + salario flexible en un solo contrato para PyME española y colombiana.",rk:"Cusp Capital entró como mayor accionista en 2025: la ventana de salida se abre recién en 2027-2028.",u:"https://www.eu-startups.com/2025/06/madrid-based-payflow-raises-e10-million-to-expand-their-earned-wage-access-platform-across-europe-and-lam/",w:"https://payflow.es"},
-{n:"Juicebox (PeopleGPT)",g:"EE.UU.",geo:"Global",cat:"Matching y sourcing IA",q:"Buscador de talento en lenguaje natural sobre 800M+ perfiles públicos, con agentes de sourcing y outreach.",et:"Serie A",r:"USD 30M · sep 2025",tot:"USD 36M",inv:"Sequoia Capital, Coatue, NFDG, Lux Capital, BOND, Y Combinator",val:"n/d",tier:"C",tk:"Medio",why:"Convierte la base de CVs de Computrabajo en un buscador semántico tipo prompt, monetizable como upsell de búsqueda avanzada. Ya opera sobre USD 10M de ARR con 2.500 clientes.",rk:"Ronda Sequoia 2025 probablemente fuera del rango de un comprador mediano, y su ventaja es dato público scrapeado: replicable.",u:"https://theaiinsider.tech/2025/10/08/juicebox-announces-36m-in-funding-to-redefine-ai-driven-recruiting-with-peoplegpt/",w:"https://juicebox.ai"},
-{n:"Sesame HR",g:"España",geo:"España",cat:"HR SaaS PyME",q:"Software de RRHH con IA para PyMEs: control horario, ATS, evaluación y documentos, en España y LatAm.",et:"Serie B / growth",r:"EUR 23M · may 2024 (+ hasta EUR 50M de deuda BBVA Spark, oct 2025)",tot:"n/d",inv:"GP Bullhound, PSG Equity, BBVA Spark (deuda)",val:"n/d",tier:"C",tk:"Medio",why:"El competidor español más directo de Pandapé. Comprarlo consolidaría el mercado ibérico de HR SaaS PyME y daría un producto maduro para vender a la base de empresas en LatAm.",rk:"Con PSG y GP Bullhound dentro y EUR 50M de BBVA disponibles, el precio y la posición de fuerza están del lado del vendedor. Solapamiento fuerte con Pandapé.",u:"https://psgequity.com/news/sesame-closes-new-investment-round-of-23m-to-continue-its-investment-in-ai-and-accelerate-international-expansion",w:"https://www.sesamehr.es"},
-{n:"UBITS",g:"Colombia / México",geo:"LatAm",cat:"Formación y empleabilidad",q:"Plataforma B2B de formación corporativa y upskilling (750+ cursos) para empresas de LatAm.",et:"Serie B",r:"USD 25M · ene 2022",tot:"USD 35M",inv:"Riverwood Capital, Owl Ventures, Endeavor Catalyst, Roble, Salkantay",val:"n/d",tier:"C",tk:"Medio",why:"Cierra el hueco de formación: cursos vendidos a las empresas que ya pagan Computrabajo, más una línea B2C de empleabilidad sobre millones de candidatos registrados que hoy no generan ingreso.",rk:"Riverwood Capital es el inversor principal de Jobint (Bumeran, Zonajobs, Laborum), competidor directo de Computrabajo. Conflicto de interés evidente en cualquier negociación.",u:"https://www.gunder.com/en/news-insights/client-news/ubits-raises-25m-series-b-financing",w:"https://www.ubits.com"},
-{n:"Zubale",g:"México",geo:"LatAm",cat:"Staffing y gig",q:"Marketplace y software que asigna tareas de picking, empaque y entrega a red gig para retailers en 200+ ciudades.",et:"Serie A (extensión)",r:"USD 25M · nov 2023",tot:"USD 73M",inv:"QED Investors, NFX, Kevin Efrusy",val:"n/d",tier:"C",tk:"Medio",why:"Entrada al trabajo por tarea, un segmento que los clasificados no capturan, con clientes retail (Carrefour, GPA, Cencosud, Walmart) que se solapan con los mayores anunciantes de Computrabajo en México y Brasil.",rk:"Modelo operativo intensivo con riesgo laboral y regulatorio en clasificación de trabajadores. Sin ronda nueva desde 2023.",u:"https://techcrunch.com/2023/11/30/zubale-software-retailers-e-commerce-latin-america/",w:"https://www.zubale.com"},
-{n:"Findem",g:"EE.UU.",geo:"Global",cat:"Matching y sourcing IA",q:"Talent data: construye perfiles con atributos derivados de billones de datos y calibra vacantes.",et:"Serie C",r:"USD 51M (36M equity + 15M deuda) · oct 2025",tot:"USD 105M",inv:"Silver Lake Waterman, Wing Ventures, Harmony Capital, J.P. Morgan (deuda)",val:"n/d",tier:"C",tk:"Grande",why:"Capa de enriquecimiento que mejoraría el matching y el ranking de Computrabajo sin depender de que el candidato actualice su CV. Útil para vender shortlists a grandes cuentas.",rk:"USD 105M levantados y foco enterprise US: precio alto y poco encaje con PyME hispanohablante.",u:"https://www.prnewswire.com/news-releases/findem-raises-51-million-to-transform-how-companies-hire-with-the-worlds-largest-expert-labeled-talent-dataset-302589634.html",w:"https://www.findem.ai"},
-{n:"Sólides",g:"Brasil",geo:"LatAm",cat:"HR SaaS PyME",q:"Suite de gestión de personas para PyMEs brasileñas: perfil comportamental, ATS, desempeño, nómina y beneficios.",et:"Serie B (PE)",r:"R$ 530M (~USD 100M) · feb 2022",tot:"USD 104M",inv:"Warburg Pincus, DGF Investimentos",val:"n/d",tier:"C",tk:"Grande",why:"Brasil es hoy el mercado más grande de Redarbor tras Catho e InfoJobs Brasil. Sólides aportaría 40.000 clientes PyME para vender vacantes cruzadas y una versión local de Pandapé ya escalada.",rk:"Activo controlado por private equity con meta de R$ 1.000M de facturación a 2028: probablemente demasiado caro y grande para el balance de Redarbor.",u:"https://exame.com/pme/solides-hrtech-das-pmes-recebe-aporte-de-r-530-milhoes/",w:"https://solides.com.br"},
-{n:"Buk",g:"Chile",geo:"LatAm",cat:"Nómina y pagos",q:"Gestión de personas y nómina para empresas medianas y grandes: 7.000 clientes, 1,5M+ de empleados.",et:"Serie B",r:"USD 50M · ene 2025",tot:"n/d (USD 50M en 2021, USD 35M, USD 50M en 2025)",inv:"Headline, Workday, Greenoaks, Base10, Endeavor Catalyst",val:"~USD 850M (ene 2025)",tier:"C",tk:"Grande",why:"Sería el salto de clasificados a HCM regional de verdad: cubre Chile, Perú y Colombia, mercados fuertes de Computrabajo donde Pandapé es débil, y trae nómina real, no solo reclutamiento.",rk:"A USD 850M vale más que todo Redarbor, y Workday ya está en el cap table. Solo viable como fusión o inversión minoritaria.",u:"https://www.finsmes.com/2025/01/buk-raised-usd50m-in-series-b-valued-at-approximately-us850m.html",w:"https://www.buk.cl"},
-{n:"Job&Talent",g:"España",geo:"España",cat:"Staffing y gig",q:"Plataforma digital de trabajo temporal: 300.000+ colocaciones en 2024 en logística, almacén y retail.",et:"Serie F",r:"EUR 92M (~USD 103M) · abr 2025, en down round",tot:"n/d (>USD 1.000M acumulado)",inv:"Atomico, BlackRock, Kinnevik, DN Capital, InfraVia, Kibo",val:"EUR 1.300M (abr 2025)",tier:"C",tk:"Grande",why:"Es la capacidad que Redarbor no tiene: pasar de cobrar por publicar vacantes a cobrar por colocar y facturar horas trabajadas — margen por trabajador en vez de por anuncio.",rk:"Intensivo en capital y con márgenes de ETT. Vale diez veces Redarbor y ya está en down round: cabe como socio o comprador, no como target.",u:"https://techcrunch.com/2025/04/10/jobandtalent-raises-103m-on-a-down-round-1-5b-valuation-as-it-looks-to-ai-to-recruit-temps/",w:"https://www.jobandtalent.com"}
-];
+const BLOB="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";
+const KEYNAME="radar_redarbor_pw";
+let P=null;
 
-const TIER={A:"A · MOVER AHORA",B:"B · VIGILAR",C:"C · SOLO ALIANZA"};
-const TKO={Digerible:0,Medio:1,Grande:2}, TRO={A:0,B:1,C:2};
-const st={cat:"Todas",geo:"Todas",tk:"Todos",sort:"tier"};
+async function unlock(pw){
+  const raw=Uint8Array.from(atob(BLOB),c=>c.charCodeAt(0));
+  const salt=raw.slice(0,16),iv=raw.slice(16,28),ct=raw.slice(28);
+  const base=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);
+  const k=await crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:200000,hash:"SHA-256"},base,{name:"AES-GCM",length:256},false,["decrypt"]);
+  const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv},k,ct);
+  return JSON.parse(new TextDecoder().decode(pt));
+}
 
-function chips(id,key,vals){
-  const el=document.getElementById(id);
-  vals.forEach(v=>{
-    const b=document.createElement("button");
-    b.className="chip";b.textContent=v;b.setAttribute("aria-pressed",st[key]===v);
-    b.onclick=()=>{st[key]=v;[...el.querySelectorAll(".chip")].forEach(c=>c.setAttribute("aria-pressed",c.textContent===v));render()};
-    el.appendChild(b);
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const TIERN={A:"A · Mover ahora",B:"B · Vigilar",C:"C · Solo alianza"};
+const TIERNOTE={A:"Precio alcanzable y encaje directo con un hueco real del grupo.",B:"Vale la conversación exploratoria, pero hay algo que resolver antes.",C:"Fuera de alcance para comprar: cabe como alianza, fusión o minoritaria."};
+const TKO={Digerible:0,Medio:1,Grande:2},TRO={A:0,B:1,C:2};
+const st={tk:"Todos",geo:"Todas",cat:"Todas"};
+
+function boot(data){
+  P=data;
+  $("pin").classList.add("hide");
+  $("mode").textContent="Investigación de fuentes públicas · agosto 2026 · "+P.d.length+" compañías";
+  $("foot").textContent=P.foot;
+  kpis();filters();method();route();
+}
+function kpis(){
+  const d=P.d,k=[
+    [d.length,"en el radar"],
+    [d.filter(x=>x.tier==="A").length,"mover ahora"],
+    [d.filter(x=>x.tk==="Digerible").length,"ticket chico"],
+    [new Set(d.map(x=>x.cat)).size,"categorías"]
+  ];
+  $("kpis").innerHTML=k.map(([n,l])=>`<div class="kpi"><span class="n">${n}</span><div class="l">${l}</div></div>`).join("");
+}
+function filters(){
+  const uniq=key=>[...new Set(P.d.map(x=>x[key]))].sort();
+  let h="";
+  ["Todos","Digerible","Medio","Grande"].forEach(v=>{h+=`<button class="fchip" data-k="tk" data-v="${v}" aria-pressed="${st.tk===v}">${v}</button>`});
+  h+=`<select data-k="geo">`+["Todas",...uniq("geo")].map(v=>`<option${st.geo===v?" selected":""}>${v}</option>`).join("")+`</select>`;
+  h+=`<select data-k="cat">`+["Todas",...uniq("cat")].map(v=>`<option${st.cat===v?" selected":""}>${esc(v)}</option>`).join("")+`</select>`;
+  h+=`<span class="fcount" id="fcount"></span>`;
+  const f=$("filters");f.innerHTML=h;
+  f.querySelectorAll(".fchip").forEach(b=>b.onclick=()=>{st.tk=b.dataset.v;filters();list()});
+  f.querySelectorAll("select").forEach(s=>s.onchange=()=>{st[s.dataset.k]=s.value;list()});
+  list();
+}
+function match(x){return (st.tk==="Todos"||x.tk===st.tk)&&(st.geo==="Todas"||x.geo===st.geo)&&(st.cat==="Todas"||x.cat===st.cat)}
+function list(){
+  const r=P.d.filter(match).sort((a,b)=>TRO[a.tier]-TRO[b.tier]||TKO[a.tk]-TKO[b.tk]||a.n.localeCompare(b.n));
+  const fc=$("fcount");if(fc)fc.textContent=r.length+" de "+P.d.length;
+  if(!r.length){$("list").innerHTML='<div class="empty">Ninguna compañía cumple ese cruce de filtros.</div>';return}
+  let h="";
+  ["A","B","C"].forEach(t=>{
+    const g=r.filter(x=>x.tier===t);if(!g.length)return;
+    h+=`<section class="idea-group"><h2>${TIERN[t]} · ${g.length}</h2><div class="idea-group-note">${TIERNOTE[t]}</div>`;
+    g.forEach((x,i)=>{
+      const idx=P.d.indexOf(x);
+      h+=`<button class="prow" onclick="location.hash='s${idx}'">
+        <span class="pos">${i+1}</span>
+        <span class="nm">${esc(x.n)}
+          <span class="who">${esc(x.g)} · ${esc(x.cat)}</span>
+          <span class="refline">${esc(x.r)}</span>
+        </span>
+        <span class="chip ${t.toLowerCase()}">${x.tk}</span>
+        <span class="sc">${t}</span>
+      </button>`;
+    });
+    h+=`</section>`;
   });
+  $("list").innerHTML=h;
 }
-const uniq=k=>[...new Set(D.map(d=>d[k]))].sort();
-chips("f-cat","cat",["Todas",...uniq("cat")]);
-chips("f-geo","geo",["Todas",...uniq("geo")]);
-chips("f-tk","tk",["Todos","Digerible","Medio","Grande"]);
-document.getElementById("sort").onchange=e=>{st.sort=e.target.value;render()};
+function method(){
+  $("method").innerHTML=
+    `<div class="ctxgrid">`+P.ctx.map(c=>`<div><span>${esc(c[0])}</span><p>${c[1]}</p></div>`).join("")+`</div>`+
+    P.method.map(p=>`<p>${p}</p>`).join("");
+}
+function detail(i){
+  const x=P.d[i];if(!x)return location.hash="";
+  $("detail").innerHTML=`
+    <button class="back" onclick="location.hash=''">← Volver</button>
+    <div class="dhead"><h1>${esc(x.n)}</h1><div class="sub">${esc(x.g)}</div></div>
+    <div class="dchips">
+      <span class="chip ${x.tier.toLowerCase()}">${TIERN[x.tier]}</span>
+      <span class="chip">${esc(x.cat)}</span>
+      <span class="chip">Ticket ${x.tk}</span>
+      <span class="chip">${esc(x.et)}</span>
+    </div>
+    <p class="dq">${esc(x.q)}</p>
+    <div class="tblwrap"><table class="tbl">
+      <tr><th>Última ronda</th><td>${esc(x.r)}</td></tr>
+      <tr><th>Total levantado</th><td>${esc(x.tot)}</td></tr>
+      <tr><th>Valuación</th><td>${esc(x.val)}</td></tr>
+      <tr><th>Inversores</th><td>${esc(x.inv)}</td></tr>
+    </table></div>
+    <div class="blk"><h3>Por qué le suma a Redarbor</h3><p>${esc(x.why)}</p></div>
+    <div class="blk risk"><h3>La pega</h3><p>${esc(x.rk)}</p></div>
+    <div class="links">
+      <a href="${esc(x.w)}" target="_blank" rel="noopener">Sitio de la compañía ↗</a>
+      <a href="${esc(x.u)}" target="_blank" rel="noopener">Fuente del dato de financiamiento ↗</a>
+    </div>
+    <footer class="site-footer">${P.foot}</footer>`;
+}
+function route(){
+  const m=(location.hash||"").match(/^#s(\d+)$/);
+  if(m){detail(+m[1]);$("home").classList.add("hide");$("detail").classList.remove("hide");window.scrollTo(0,0)}
+  else{$("home").classList.remove("hide");$("detail").classList.add("hide")}
+}
+addEventListener("hashchange",()=>{if(P)route()});
 
-function render(){
-  let r=D.filter(d=>(st.cat==="Todas"||d.cat===st.cat)&&(st.geo==="Todas"||d.geo===st.geo)&&(st.tk==="Todos"||d.tk===st.tk));
-  const s={tier:(a,b)=>TRO[a.tier]-TRO[b.tier]||TKO[a.tk]-TKO[b.tk]||a.n.localeCompare(b.n),
-           ticket:(a,b)=>TKO[a.tk]-TKO[b.tk]||TRO[a.tier]-TRO[b.tier],
-           az:(a,b)=>a.n.localeCompare(b.n),
-           geo:(a,b)=>a.geo.localeCompare(b.geo)||TRO[a.tier]-TRO[b.tier]}[st.sort];
-  r.sort(s);
-  document.getElementById("count").innerHTML="<b>"+r.length+"</b> / "+D.length;
-  const g=document.getElementById("grid");
-  if(!r.length){g.innerHTML='<div class="empty">Ningún activo cumple ese cruce de filtros.</div>';return}
-  g.innerHTML=r.map(d=>`<article class="card t-${d.tier}">
-    <div class="ch">
-      <div><div class="nm"><a href="${d.w}" target="_blank" rel="noopener">${d.n}</a></div><div class="geo">${d.g}</div></div>
-      <div class="tier">${TIER[d.tier]}</div>
-    </div>
-    <p class="que">${d.q}</p>
-    <div class="tags"><span class="tag">${d.cat}</span><span class="tag">Ticket ${d.tk}</span><span class="tag">${d.et}</span></div>
-    <div class="facts">
-      <div><span>Última ronda</span>${d.r}</div>
-      <div><span>Total levantado</span>${d.tot}</div>
-      <div><span>Valuación</span>${d.val}</div>
-      <div><span>Inversores</span>${d.inv}</div>
-    </div>
-    <div class="why"><span>Por qué le suma a Redarbor</span>${d.why}</div>
-    <div class="rk"><span>La pega</span>${d.rk}</div>
-    <div class="src"><a href="${d.u}" target="_blank" rel="noopener">Fuente del dato de financiamiento ↗</a></div>
-  </article>`).join("");
+const inp=$("pinInput"),err=$("pinErr");
+async function tryPw(pw,silent){
+  try{const d=await unlock(pw);sessionStorage.setItem(KEYNAME,pw);boot(d);return true}
+  catch(e){if(!silent){err.classList.add("show");inp.value="";inp.focus()}return false}
 }
-render();
+inp.addEventListener("keydown",e=>{if(e.key==="Enter"){err.classList.remove("show");tryPw(inp.value)}});
+inp.addEventListener("input",()=>{err.classList.remove("show");if(inp.value.length>=6)tryPw(inp.value,true)});
+(async()=>{const s=sessionStorage.getItem(KEYNAME);if(s&&await tryPw(s,true))return;inp.focus()})();
 </script>
 </body>
 </html>
